@@ -1,0 +1,40 @@
+name: react
+
+description: |
+  Example component that includes a React frontend that integrates with an an Architect dependency for the backend
+
+homepage: https://github.com/architect-templates/react
+
+keywords:
+  - react
+  - express
+
+dependencies:
+  node-rest-api: latest
+
+interfaces:
+  app:
+    url: ${{ services.app.interfaces.main.url }}
+    ingress:
+      subdomain: app
+
+services:
+  app:
+    build:
+      context: ./
+      args:
+        NODE_ENV: production
+    interfaces:
+      main: 8080
+    environment:
+      PORT: 8080
+      REACT_APP_API_ADDR: ${{ dependencies['node-rest-api'].ingresses.api.url }}
+    debug:
+      command: npm run dev
+      build:
+        args:
+          NODE_ENV: development
+      volumes:
+        src:
+          mount_path: /usr/src/app/src
+          host_path: ./src
